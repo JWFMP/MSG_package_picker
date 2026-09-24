@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find your package | Companies MadeSimple (POC)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#EEF2F6;
+  --panel:#FFFFFF;
+  --ink:#152238;
+  --ink-2:#4A5568;
+  --ink-3:#8492A6;
+  --line:#D9E0E8;
+  --bot:#FFFFFF;
+  --user:#152238;
+  --user-ink:#FFFFFF;
+  --accent:#0E7C5B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#DDF3EA;
+  --gold:#F5B82E;
+  --gold-soft:#FFF3D3;
+  --chip:#FFFFFF;
+  --chip-hover:#F1F5F9;
+  --shadow:0 1px 2px rgba(21,34,56,.06),0 8px 24px rgba(21,34,56,.08);
+  --radius:18px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1621; --panel:#182131; --ink:#EEF2F7; --ink-2:#B7C2D0; --ink-3:#7F8CA0;
+    --line:#2A3547; --bot:#1F2A3C; --user:#E4EAF2; --user-ink:#111927;
+    --accent:#2FBF8E; --accent-ink:#06261B; --accent-soft:#163D30;
+    --gold:#F5B82E; --gold-soft:#3F3210; --chip:#1F2A3C; --chip-hover:#283548;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1621; --panel:#182131; --ink:#EEF2F7; --ink-2:#B7C2D0; --ink-3:#7F8CA0;
+  --line:#2A3547; --bot:#1F2A3C; --user:#E4EAF2; --user-ink:#111927;
+  --accent:#2FBF8E; --accent-ink:#06261B; --accent-soft:#163D30;
+  --gold:#F5B82E; --gold-soft:#3F3210; --chip:#1F2A3C; --chip-hover:#283548;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0;height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:15.5px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+button{font:inherit;cursor:pointer}
+a{color:inherit}
+
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;max-width:1180px;margin:0 auto}
+header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 20px;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em;font-size:17px}
+.brand .mark{width:30px;height:30px;border-radius:9px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:14px;font-weight:800}
+.poc{font-size:12px;color:var(--ink-3);font-weight:600;border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.restart{background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink-2);font-weight:600;font-size:13px}
+.restart:hover{background:var(--chip-hover)}
+.restart:focus-visible,.chip:focus-visible,.buy:focus-visible,.send:focus-visible,.pill:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;padding:20px;min-height:0}
+
+/* chat */
+.chat{display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+.thread{flex:1;overflow-y:auto;padding:22px 20px 8px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){.thread{scroll-behavior:auto}}
+.row{display:flex;gap:10px;align-items:flex-end;max-width:88%}
+.row.user{align-self:flex-end;flex-direction:row-reverse}
+.avatar{width:30px;height:30px;border-radius:50%;flex:0 0 30px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:800;font-size:12px}
+.bubble{
+  background:var(--bot);border:1px solid var(--line);border-radius:var(--radius);border-bottom-left-radius:6px;
+  padding:12px 15px;color:var(--ink);
+}
+.row.user .bubble{background:var(--user);color:var(--user-ink);border-color:transparent;border-bottom-left-radius:var(--radius);border-bottom-right-radius:6px;font-weight:600}
+.bubble p{margin:0}
+.bubble p+p{margin-top:8px}
+.bubble strong{font-weight:700}
+.bubble .fine{font-size:13px;color:var(--ink-2)}
+.row.user .bubble .fine{color:inherit;opacity:.8}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.row{animation:pop .22s ease-out both}
+@media (prefers-reduced-motion:reduce){.row{animation:none}}
+
+.typing{display:inline-flex;gap:4px;padding:6px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink-3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 14px 60px}
+.chip{
+  background:var(--chip);border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;
+  color:var(--ink);font-weight:600;font-size:14px;transition:background .12s,border-color .12s,transform .12s;
+}
+.chip:hover{background:var(--chip-hover);border-color:var(--ink-3)}
+.chip.selected{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.primary{border-color:var(--accent);color:var(--accent)}
+.chip.primary:hover{background:var(--accent-soft)}
+.chip:active{transform:scale(.97)}
+
+.composer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel)}
+.composer input{
+  flex:1;border:1.5px solid var(--line);border-radius:999px;padding:11px 16px;font:inherit;background:var(--bg);color:var(--ink);
+}
+.composer input:focus{outline:none;border-color:var(--accent)}
+.send{border:none;border-radius:999px;background:var(--ink);color:var(--bg);padding:0 18px;font-weight:700}
+
+/* recommendation card inside chat */
+.reco{
+  border:2px solid var(--accent);border-radius:var(--radius);padding:16px;background:var(--panel);
+  max-width:100%;
+}
+.reco .tag{display:inline-block;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800;border-radius:6px;padding:3px 8px;margin-bottom:8px}
+.reco h3{margin:0 0 2px;font-size:22px;letter-spacing:-.02em}
+.reco .price{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.reco .price small{font-size:13px;font-weight:600;color:var(--ink-2);margin-left:4px}
+.reco .was{color:var(--ink-3);text-decoration:line-through;font-weight:600;font-size:14px;margin-left:8px}
+.reco ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.reco li{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.reco li::before{content:"";flex:0 0 18px;height:18px;margin-top:2px;border-radius:50%;background:var(--accent-soft) center/11px no-repeat;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E7C5B' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E")}
+.reco li.why{font-weight:600}
+.reco .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.buy{background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;padding:11px 18px;font-weight:800;text-decoration:none;display:inline-block}
+.buy.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+
+/* shortlist panel */
+aside{display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto}
+aside h2{margin:4px 2px 2px;font-size:14px;color:var(--ink-2);font-weight:700}
+.pkg{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;
+  transition:border-color .25s,box-shadow .25s,transform .25s;position:relative;
+}
+.pkg.lead{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.pkg .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.pkg .name{font-weight:800;font-size:17px;letter-spacing:-.01em}
+.pkg .p{font-weight:800}
+.pkg .p small{font-weight:600;color:var(--ink-3);font-size:12px}
+.pkg .badge{font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--gold-soft);color:#7A5300;margin-left:6px;vertical-align:middle}
+:root[data-theme="dark"] .pkg .badge{color:var(--gold)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pkg .badge{color:var(--gold)}}
+.pkg .desc{font-size:13px;color:var(--ink-2);margin:4px 0 8px}
+.meter{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.meter b{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.fit{font-size:12px;color:var(--ink-3);margin-top:6px;font-weight:600}
+.pkg.lead .fit{color:var(--accent)}
+.pkg .reasons{margin:8px 0 0;padding:0;list-style:none;font-size:13px;color:var(--ink-2);display:grid;gap:3px}
+.pkg .reasons li::before{content:"+ ";color:var(--accent);font-weight:800}
+.ro{background:var(--ink);color:var(--bg);border-radius:18px;padding:14px 16px;font-size:13.5px;line-height:1.5}
+.ro b{display:block;font-size:14px;margin-bottom:4px}
+.ro span{opacity:.8}
+
+/* mobile */
+@media (max-width:860px){
+  main{grid-template-columns:1fr;gap:12px;padding:12px}
+  aside{display:none}
+  .chips{padding-left:20px}
+  .row{max-width:94%}
+  .mobile-bar{display:flex}
+}
+.mobile-bar{
+  display:none;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 16px;border-top:1px solid var(--line);background:var(--accent-soft);color:var(--ink);font-size:13px;font-weight:600;
+}
+.mobile-bar b{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><span class="mark">MS</span> Companies MadeSimple <span class="poc">Package finder POC</span></div>
+    <button class="restart" id="restart" type="button">Start again</button>
+  </header>
+  <main>
+    <section class="chat" aria-label="Package finder chat">
+      <div class="thread" id="thread" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <div class="mobile-bar" id="mobileBar">Best fit so far: <b id="mobileLead">Working it out</b></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <input id="input" type="text" placeholder="Or ask something, like 'what is a registered office?'" aria-label="Ask a question">
+        <button class="send" type="submit">Send</button>
+      </form>
+    </section>
+    <aside aria-label="Your shortlist">
+      <h2>Your shortlist, updated as you answer</h2>
+      <div id="panel"></div>
+      <div class="ro"><b>Why the registered office matters</b><span>Every UK company needs one, and it goes on the public Companies House register for anyone to search. Using our N1 London address keeps your home address private. All three packages below include it, plus a service address for directors.</span></div>
+    </aside>
+  </main>
+</div>
+
+<script>
+(function(){
+const PKG = {
+  privacy:{
+    name:"Privacy", price:"£79.99", was:"£114.99", badge:"Special offer",
+    desc:"Registered office, director service address, and 1 month of Mailbox Standard. Personal use only.",
+    url:"https://www.companiesmadesimple.com/packages/limited-company/privacy",
+    includes:["UK limited company, £100 Companies House fee included","Registered office address, N1 London","Director service address","Government mail scanned and emailed","1 month Mailbox Standard free","Digital certificates, minutes and 29 statutory templates","Free business bank account and up to £100 cashback"]
+  },
+  comprehensive:{
+    name:"Comprehensive", price:"£159.99",
+    desc:"Everything in Privacy, plus printed documents and your first confirmation statement filed for you.",
+    url:"https://www.companiesmadesimple.com/packages/limited-company/comprehensive",
+    includes:["Everything in Privacy","3 months Mailbox Standard free","Printed certificate of incorporation and share certificates","Bound Memorandum and Articles","First year confirmation statement filed (worth £89.99)"]
+  },
+  ultimate:{
+    name:"Ultimate", price:"£199.99", badge:"Best value",
+    desc:"The full setup: mail forwarding for a year, VAT registration, PSC register and coworking days in London.",
+    url:"https://www.companiesmadesimple.com/packages/limited-company/ultimate",
+    includes:["Everything in Comprehensive","12 months Mailbox Premium free","Mail forwarding for 1 year (worth £239.88)","VAT registration with HMRC","PSC online register","20 hotdesk day passes at Workhub, N1 London"]
+  }
+};
+const ORDER = ["privacy","comprehensive","ultimate"];
+const BASIC_URL = "https://www.companiesmadesimple.com/packages/limited-company/basic";
+
+const thread = document.getElementById("thread");
+const chips = document.getElementById("chips");
+const panel = document.getElementById("panel");
+const input = document.getElementById("input");
+const mobileLead = document.getElementById("mobileLead");
+
+let state, scores, reasons, step, busy=false;
+
+function reset(){
+  state = {personal:null, privacy:null, mail:null, compliance:null, extras:[]};
+  scores = {privacy:0, comprehensive:0, ultimate:0};
+  reasons = {privacy:[], comprehensive:[], ultimate:[]};
+  step = 0; busy=false;
+  thread.innerHTML=""; chips.innerHTML="";
+  renderPanel();
+  bot("<p>Hi. I'll help you pick the right company formation package in under a minute.</p><p>Every package registers your UK limited company and includes the £100 Companies House fee. The differences are about privacy, post, and how much admin you'd like us to take off your hands.</p>", ()=>ask());
+}
+
+function add(who, html){
+  const row=document.createElement("div"); row.className="row "+who;
+  row.innerHTML = (who==="bot"?'<div class="avatar">MS</div>':'') + '<div class="bubble">'+html+'</div>';
+  thread.appendChild(row); thread.scrollTop=thread.scrollHeight; return row;
+}
+function bot(html, then){
+  busy=true; chips.innerHTML="";
+  const t=add("bot",'<span class="typing"><i></i><i></i><i></i></span>');
+  const delay = Math.min(1100, 350 + html.length*4);
+  setTimeout(()=>{ t.querySelector(".bubble").innerHTML=html; thread.scrollTop=thread.scrollHeight; busy=false; if(then) then(); }, delay);
+}
+function user(text){ add("user","<p>"+text+"</p>"); }
+
+function offer(options){
+  chips.innerHTML="";
+  options.forEach(o=>{
+    const b=document.createElement("button"); b.type="button"; b.className="chip"+(o.primary?" primary":""); b.textContent=o.label;
+    b.onclick=()=>{ if(busy) return; [...chips.children].forEach(c=>c.disabled=true); b.classList.add("selected"); user(o.label); setTimeout(()=>o.go(), 250); };
+    chips.appendChild(b);
+  });
+  thread.scrollTop=thread.scrollHeight;
+}
+function offerMulti(options, done){
+  chips.innerHTML=""; const picked=new Set();
+  options.forEach(o=>{
+    const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=o.label;
+    b.onclick=()=>{ if(o.none){ picked.clear(); [...chips.querySelectorAll(".chip")].forEach(c=>c.classList.remove("selected")); b.classList.add("selected"); picked.add("none"); }
+      else { chips.querySelector('[data-none]')?.classList.remove("selected"); picked.delete("none"); b.classList.toggle("selected"); picked.has(o.key)?picked.delete(o.key):picked.add(o.key); } };
+    if(o.none) b.dataset.none="1";
+    chips.appendChild(b);
+  });
+  const go=document.createElement("button"); go.type="button"; go.className="chip primary"; go.textContent="Continue";
+  go.onclick=()=>{ if(busy) return; const arr=[...picked].filter(k=>k!=="none"); user(arr.length? arr.map(k=>options.find(o=>o.key===k).label).join(", ") : "None of these"); done(arr); };
+  chips.appendChild(go);
+}
+
+function bump(key, n, why){ scores[key]+=n; if(why && !reasons[key].includes(why)) reasons[key].push(why); }
+
+function ask(){
+  step++;
+  if(step===1){
+    bot("<p>First, who is this company for?</p>", ()=>offer([
+      {label:"It's my own company", go:()=>{ state.personal=true; bump("privacy",2,"Eligible for the £79.99 offer"); renderPanel(); ask(); }},
+      {label:"I'm forming it for a client", go:()=>{ state.personal=false; bump("comprehensive",1); bump("ultimate",1); renderPanel();
+        bot("<p>Noted. The £79.99 Privacy offer is for people forming their own company, so for a client we'd look at Comprehensive or Ultimate.</p>", ask); }}
+    ]));
+  }
+  else if(step===2){
+    bot("<p>Do you want to keep your home address off the public register?</p><p class='fine'>Your company's registered office and each director's service address are published by Companies House and searchable by anyone. Using our N1 London address instead keeps your home private.</p>", ()=>offer([
+      {label:"Yes, keep my home address private", primary:true, go:()=>{ state.privacy=true; ORDER.forEach(k=>bump(k,2,"N1 London registered office and service address")); renderPanel(); ask(); }},
+      {label:"What does that involve?", go:()=>{ bot("<p>We give you permission to use 20 Wenlock Road, London N1 7GU as your company's registered office and as the service address for your directors and PSCs. Official government post from HMRC, Companies House and the like arrives with us, gets scanned and lands in your inbox within a working day.</p><p>It's included in Privacy, Comprehensive and Ultimate, renewable annually. Shall we use it?</p>", ()=>offer([
+        {label:"Yes, keep my home address private", primary:true, go:()=>{ state.privacy=true; ORDER.forEach(k=>bump(k,2,"N1 London registered office and service address")); renderPanel(); ask(); }},
+        {label:"No, I'll use my own address", go:()=>{ state.privacy=false; ask(); }}
+      ])); }},
+      {label:"No, I'll use my own address", go:()=>{ state.privacy=false; ask(); }}
+    ]));
+  }
+  else if(step===3){
+    if(state.privacy===false){
+      bot("<p>Fair enough. If you're happy for your own address to appear on the public register, the Basic package at £104.99 covers the formation itself.</p><p>Worth knowing: once your address is on the register it stays visible in the history, and around half of new companies come back to add a registered office later. Do you want to carry on and see whether one of the address packages fits better?</p>", ()=>offer([
+        {label:"Yes, show me the options", primary:true, go:()=>{ state.privacy="maybe"; ORDER.forEach(k=>bump(k,1)); renderPanel(); ask(); }},
+        {label:"No, Basic is fine", go:()=>{ finishBasic(); }}
+      ]));
+      return;
+    }
+    bot("<p>What kind of post do you expect your company to receive?</p>", ()=>offer([
+      {label:"Just official government letters", go:()=>{ state.mail="gov"; bump("privacy",2,"Government mail scanned and emailed"); renderPanel(); ask(); }},
+      {label:"Business post too, scanned to me", go:()=>{ state.mail="scan"; bump("comprehensive",2,"3 months of business mail scanning included"); bump("ultimate",2,"12 months of Mailbox Premium"); bump("privacy",1); renderPanel(); ask(); }},
+      {label:"I need physical post forwarded to me", go:()=>{ state.mail="forward"; bump("ultimate",4,"A full year of mail forwarding, worth £239.88"); bump("comprehensive",1); renderPanel(); ask(); }}
+    ]));
+  }
+  else if(step===4){
+    bot("<p>Every company has to file a confirmation statement each year. Would you rather handle that yourself, or have us file the first one for you?</p>", ()=>offer([
+      {label:"I'll handle filings myself", go:()=>{ state.compliance="self"; bump("privacy",2,"No paid extras you don't need"); renderPanel(); ask(); }},
+      {label:"File my first one for me", go:()=>{ state.compliance="us"; bump("comprehensive",3,"First confirmation statement filed, worth £89.99"); bump("ultimate",3,"First confirmation statement filed, worth £89.99"); renderPanel(); ask(); }}
+    ]));
+  }
+  else if(step===5){
+    bot("<p>Last one. Pick anything else you'd find useful.</p>", ()=>offerMulti([
+      {key:"printed", label:"Printed certificates for banks or lenders"},
+      {key:"vat", label:"Register for VAT straight away"},
+      {key:"cowork", label:"Desk space in London now and then"},
+      {key:"none", label:"None of these", none:true}
+    ], arr=>{
+      state.extras=arr;
+      if(arr.includes("printed")){ bump("comprehensive",2,"Printed certificate, share certificates and bound articles"); bump("ultimate",2,"Printed certificate, share certificates and bound articles"); }
+      if(arr.includes("vat")){ bump("ultimate",3,"VAT registration handled with HMRC"); }
+      if(arr.includes("cowork")){ bump("ultimate",3,"20 hotdesk days at Workhub, N1"); }
+      if(!arr.length){ bump("privacy",1); }
+      renderPanel(); finish();
+    }));
+  }
+}
+
+function lead(){
+  let best="privacy";
+  ORDER.forEach(k=>{ if(scores[k]>scores[best]) best=k; });
+  if(state.personal===false && best==="privacy") best="comprehensive";
+  return best;
+}
+
+function finish(){
+  step=99;
+  const k=lead(); const p=PKG[k];
+  const why = reasons[k].slice(0,3);
+  let intro;
+  if(k==="privacy") intro="<p>Based on your answers, <strong>Privacy</strong> is the one. It does exactly what you need without paying for admin you'll do yourself, and at £79.99 it's currently cheaper than Basic.</p>";
+  else if(k==="comprehensive") intro="<p>Based on your answers, <strong>Comprehensive</strong> fits best. It keeps your address private and takes the first year's compliance and paperwork off your plate.</p>";
+  else intro="<p>Based on your answers, <strong>Ultimate</strong> is the right call. The mail forwarding alone is worth more than the difference in price, and the rest comes as a bonus.</p>";
+  bot(intro, ()=>{
+    const others=ORDER.filter(o=>o!==k);
+    const card=`<div class="reco">
+      <span class="tag">Recommended for you</span>
+      <h3>${p.name}</h3>
+      <div class="price">${p.price}<small>+VAT</small>${p.was?`<span class="was">${p.was}</span>`:""}</div>
+      <ul>${why.map(w=>`<li class="why">${w}</li>`).join("")}${p.includes.slice(0,4).map(i=>`<li>${i}</li>`).join("")}</ul>
+      <div class="actions"><a class="buy" href="${p.url}" target="_blank" rel="noopener">Choose ${p.name}</a>
+      <a class="buy alt" href="https://www.companiesmadesimple.com/compare-packages" target="_blank" rel="noopener">Compare all</a></div>
+    </div>`;
+    add("bot", card);
+    setTimeout(()=>bot("<p>Want me to show what you'd gain by stepping up, or is there anything you'd like to check first?</p>", ()=>offer([
+      ...others.map(o=>({label:"What does "+PKG[o].name+" add?", go:()=>explain(o)})),
+      {label:"How do renewals work?", go:()=>answer("renew")},
+      {label:"I'm happy, take me to checkout", primary:true, go:()=>{ bot(`<p>Great choice. <a href="${p.url}" target="_blank" rel="noopener">Open ${p.name} on companiesmadesimple.com</a> to start your application. You'll need photo ID and a proof of address for the online ID check, and your company can be ready to trade in as little as 3 working hours.</p>`); }}
+    ])), 400);
+  });
+}
+
+function finishBasic(){
+  step=99;
+  bot(`<p>No problem. <a href="${BASIC_URL}" target="_blank" rel="noopener">Basic at £104.99 +VAT</a> registers your company with everything you need to trade, and you can add a registered office address later if you change your mind.</p><p>One thing to flag: the Privacy package is £79.99 right now, so it's £25 cheaper than Basic and includes the London address. Want to see it?</p>`, ()=>offer([
+    {label:"Show me Privacy", primary:true, go:()=>explain("privacy")},
+    {label:"No thanks", go:()=>bot("<p>Understood. Good luck with the new company, and we're on 020 7608 5500 if you'd like a hand.</p>")}
+  ]));
+}
+
+function explain(k){
+  const p=PKG[k];
+  bot(`<p><strong>${p.name}, ${p.price} +VAT.</strong> ${p.desc}</p><ul style="margin:8px 0 0 18px;padding:0">${p.includes.map(i=>`<li>${i}</li>`).join("")}</ul>`, ()=>offer([
+    {label:"Choose "+p.name, primary:true, go:()=>bot(`<p><a href="${p.url}" target="_blank" rel="noopener">Open ${p.name} on companiesmadesimple.com</a> to start your application.</p>`)},
+    ...ORDER.filter(o=>o!==k).map(o=>({label:"Compare with "+PKG[o].name, go:()=>explain(o)}))
+  ]));
+}
+
+const FAQ = [
+  {m:/registered office|what is (an? )?ro\b|service address/i, k:"ro", a:"A registered office is your company's official address. It's a legal requirement, must be a real UK address, and it's published on the Companies House register for anyone to search. A service address does the same job for each director. Privacy, Comprehensive and Ultimate all let you use our N1 London address for both, so your home stays off the public record."},
+  {m:/renew|annual|per year|next year/i, k:"renew", a:"The registered office and service address renew each year, as does the confirmation statement service. Mail forwarding in Ultimate runs for 12 months and then continues at £19.99 a month if you want it. Renewal prices are listed on the site under Services, then Renewals."},
+  {m:/mail|post|letter|forward|scan/i, k:"mail", a:"With the registered office, official government post (HMRC, Companies House, DWP and so on) is scanned and emailed to you free. Business post from banks, clients and suppliers needs the Mailbox service: Privacy gives you 1 month of Mailbox Standard, Comprehensive 3 months, and Ultimate 12 months of Mailbox Premium plus a year of physical forwarding."},
+  {m:/vat/i, k:"vat", a:"VAT registration with HMRC is included in Ultimate. We process it as a standard registration by default, and you can ask for the Flat Rate Scheme in the form."},
+  {m:/confirmation statement|filing|compliance/i, k:"cs", a:"Every company must file a confirmation statement annually to confirm the details Companies House holds are correct. Comprehensive and Ultimate include preparing and filing your first one, which is worth £89.99 on its own."},
+  {m:/how long|how fast|quick|hours|same day/i, k:"speed", a:"Most companies are formed within one working day, and often in as little as 3 working hours once ID checks are complete. Applications submitted at weekends or bank holidays go through the next working day."},
+  {m:/\bid\b|identity|passport|licence|kyc/i, k:"id", a:"You'll complete a free online ID check with a government photo ID, a proof of address from the last 3 months, and a selfie. Directors and people with significant control need to be verified before the application goes to Companies House."},
+  {m:/price|cost|how much|cheap/i, k:"price", a:"Privacy is £79.99 (down from £114.99, personal use only), Comprehensive is £159.99 and Ultimate is £199.99, all plus VAT and all including the £100 Companies House fee. Basic, without the London address, is £104.99."},
+  {m:/personal use|client|accountant|for someone/i, k:"personal", a:"The Privacy offer is for people forming their own company: the buyer must be a director or shareholder. If you're forming a company for a client, Comprehensive or Ultimate are the ones to look at."},
+  {m:/basic/i, k:"basic", a:"Basic is £104.99 and covers the formation, digital documents and the start-up toolkit, but no registered office. Right now Privacy costs less and includes the London address, so Basic mainly suits people who specifically want to use their own address."},
+  {m:/bank|account|cashback/i, k:"bank", a:"All packages include a free business bank account referral to partners like Tide, ANNA, Revolut, Zempler and Barclays. Privacy, Comprehensive and Ultimate also give you up to £100 cashback when you open an account with selected partners."},
+  {m:/coworking|desk|workhub|office space/i, k:"cowork", a:"Ultimate includes 20 hotdesk day passes a year at Workhub, our coworking space between Old Street and Angel, open weekdays 9 to 5."}
+];
+function answer(key){ const f=FAQ.find(x=>x.k===key); if(f) reply(f.a); }
+function reply(text){
+  bot("<p>"+text+"</p>", ()=>{ if(step<99 && step>0) resume(); else if(step===99) offer([{label:"Show my recommendation again", primary:true, go:()=>{ step=98; finish(); }},{label:"Compare all packages", go:()=>window.open("https://www.companiesmadesimple.com/compare-packages","_blank")}]); });
+}
+function resume(){ step--; ask(); }
+
+document.getElementById("composer").addEventListener("submit", e=>{
+  e.preventDefault(); const q=input.value.trim(); if(!q||busy) return;
+  input.value=""; user(q);
+  const f=FAQ.find(x=>x.m.test(q));
+  if(f) reply(f.a);
+  else reply("Good question. I can help with the registered office, post and mail forwarding, VAT, confirmation statements, timings, ID checks and prices. For anything else our team is on 020 7608 5500, or use the live chat on the main site.");
+});
+
+function renderPanel(){
+  const max=Math.max(1,...ORDER.map(k=>scores[k]));
+  const answered = ORDER.some(k=>scores[k]>0);
+  const l = answered? lead() : null;
+  panel.innerHTML = ORDER.map(k=>{
+    const p=PKG[k]; const pct=answered? Math.round(scores[k]/max*100) : 0;
+    return `<div class="pkg ${l===k?'lead':''}">
+      <div class="top"><span class="name">${p.name}${p.badge?`<span class="badge">${p.badge}</span>`:""}</span><span class="p">${p.price}<small> +VAT</small></span></div>
+      <div class="desc">${p.desc}</div>
+      <div class="meter"><b style="width:${pct}%"></b></div>
+      <div class="fit">${!answered?"Answer a few questions to see the fit": l===k?"Best fit so far":"Fit "+pct+"%"}</div>
+      ${reasons[k].length?`<ul class="reasons">${reasons[k].slice(0,3).map(r=>`<li>${r}</li>`).join("")}</ul>`:""}
+    </div>`;
+  }).join("");
+  mobileLead.textContent = l? PKG[l].name : "Answer a few questions";
+}
+
+document.getElementById("restart").onclick=reset;
+reset();
+})();
+</script>
+</body>
+</html>
